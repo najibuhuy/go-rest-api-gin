@@ -49,7 +49,7 @@ func SignUp(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	// get the email and pass from req.body
-	if c.Bind(&dto.SignUpUserRequest) != nil {
+	if c.Bind(&dto.LoginUserRequest) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read body req"})
 		return
 	}

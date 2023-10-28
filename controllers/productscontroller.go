@@ -10,15 +10,23 @@ import (
 	"github.com/najibuhuy/go-rest-api-gin/models"
 )
 
-
-
 func GetListProduct(c *gin.Context) {
-	var data []models.Product
+	channel := make(chan []models.Product) //async
+	defer close(channel)                   //after all of job has done
 
+	var data []models.Product
 	initializers.DB.Find(&data)
+
+	go func() { //goroutine  skip before this func is done
+		// time.Sleep(2 * time.Second)
+		channel <- data //await
+		fmt.Println("selesai mengirim data ke chnnel")
+
+	}()
+	listData := <-channel
 	response := dto.ListProductResponse{
 		Status:  http.StatusOK,
-		Data:    data,
+		Data:    listData,
 		Message: "SUCCES_GET_DATA",
 	}
 	fmt.Println(response, "response")
